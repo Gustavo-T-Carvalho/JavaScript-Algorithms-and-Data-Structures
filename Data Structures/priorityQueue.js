@@ -1,15 +1,24 @@
-class MaxBinaryHeap {
+class Node {
+    constructor(value, priority){
+        this.value = value;
+        this.priority = priority;
+    }
+}
+
+class PriorityQueue {
     constructor(){
         this.values = []
     }
 
-    insert(value){
-        this.values.push(value);
+    enqueue(value, priority){
+        const node = new Node(value, priority)
+        
+        this.values.push(node);
         
         let i = this.values.length - 1 ;
         let parentIndex =  Math.floor((i - 1) / 2);
-
-        while(this.values[i] > this.values[parentIndex]){
+        
+        while(parentIndex >= 0 && this.values[i].priority < this.values[parentIndex].priority){
             this.swap(this.values, i, parentIndex);
             i = parentIndex;
             parentIndex = Math.floor((i - 1) / 2);
@@ -22,35 +31,36 @@ class MaxBinaryHeap {
         arr[idx2] = aux;
     } 
 
-    remove(){
+    dequeue(){
         if(!this.values.length){
             return null;
         }
         
-        this.swap(this.values, 0, this.values.length-1);
+        this.swap(this.values, 0, this.values.length - 1);
         const removedElement = this.values.pop()
         
         let i = 0;
-        let element = this.values[i];
+        let elementPriority = this.values[i].priority;
         
+    
         while(true){
             let leftI =  Math.floor((i * 2)  + 1);
             let rightI =  Math.floor((i * 2) + 2);
-            let leftChild, rightChild;
+            let leftChildPriority, rightChildPriority;
             let swap = null;
             
             if(leftI < this.values.length){
-                leftChild = this.values[leftI];
-                if(leftChild > element){
+                leftChildPriority = this.values[leftI].priority;
+                if(leftChildPriority < elementPriority){
                     swap = leftI
                 }
             }
 
             if(rightI < this.values.length){
-                rightChild = this.values[rightI]
+                rightChildPriority = this.values[rightI].priority
                 
-                if(swap === null && leftChild > element ||
-                   swap !== null && rightChild > leftChild
+                if(swap === null && leftChildPriority < elementPriority ||
+                   swap !== null && rightChildPriority < leftChildPriority
                   ) {
                     swap = rightI
                 }
@@ -68,16 +78,13 @@ class MaxBinaryHeap {
     }
 }
 
-const maxBinaryHeap = new MaxBinaryHeap()
-maxBinaryHeap.insert(70)
-maxBinaryHeap.insert(67)
-maxBinaryHeap.insert(65)
-maxBinaryHeap.insert(45)
-maxBinaryHeap.insert(58)
-maxBinaryHeap.insert(40)
-maxBinaryHeap.insert(53)
-maxBinaryHeap.insert(44)
-maxBinaryHeap.insert(15)
-maxBinaryHeap.insert(31)
+const priorityQueue = new PriorityQueue()
+priorityQueue.enqueue("Broken arm", 2)
+priorityQueue.enqueue("Broken Leg", 3)
+priorityQueue.enqueue("Covid", 4)
+priorityQueue.enqueue("Headache", 5)
+priorityQueue.enqueue("Heartache", 1)
+
+
 
 
