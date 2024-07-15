@@ -38,11 +38,14 @@ class PriorityQueue {
         
         this.swap(this.values, 0, this.values.length - 1);
         const removedElement = this.values.pop()
+        if(this.values.length === 0){
+            return removedElement;
+        }
         
         let i = 0;
+        
         let elementPriority = this.values[i].priority;
         
-    
         while(true){
             let leftI =  Math.floor((i * 2)  + 1);
             let rightI =  Math.floor((i * 2) + 2);
@@ -59,7 +62,7 @@ class PriorityQueue {
             if(rightI < this.values.length){
                 rightChildPriority = this.values[rightI].priority
                 
-                if(swap === null && leftChildPriority < elementPriority ||
+                if(swap === null && rightChildPriority < elementPriority ||
                    swap !== null && rightChildPriority < leftChildPriority
                   ) {
                     swap = rightI
@@ -84,7 +87,4 @@ priorityQueue.enqueue("Broken Leg", 3)
 priorityQueue.enqueue("Covid", 4)
 priorityQueue.enqueue("Headache", 5)
 priorityQueue.enqueue("Heartache", 1)
-
-
-
 
