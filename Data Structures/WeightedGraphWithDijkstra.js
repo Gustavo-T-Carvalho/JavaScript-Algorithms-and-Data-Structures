@@ -1,16 +1,83 @@
+class Node {
+    constructor(value, priority){
+        this.value = value;
+        this.priority = priority;
+    }
+}
+
 class PriorityQueue {
     constructor(){
-        this.values = [];
+        this.values = []
     }
-    enqueue(val, priority){
-        this.values.push({val, priority});
-        this.sort()
+
+    enqueue(value, priority){
+        const node = new Node(value, priority)
+        
+        this.values.push(node);
+        
+        let i = this.values.length - 1 ;
+        let parentIndex =  Math.floor((i - 1) / 2);
+        
+        while(parentIndex >= 0 && this.values[i].priority < this.values[parentIndex].priority){
+            this.swap(this.values, i, parentIndex);
+            i = parentIndex;
+            parentIndex = Math.floor((i - 1) / 2);
+        }
     }
+
+    swap(arr, idx1, idx2) {
+        let aux = arr[idx1];
+        arr[idx1] = arr[idx2];
+        arr[idx2] = aux;
+    } 
+
     dequeue(){
-        return this.values.shift();
-    }
-    sort(){
-        this.values.sort((a,b) => a.priority - b.priority)
+        if(!this.values.length){
+            return null;
+        }
+        
+        this.swap(this.values, 0, this.values.length - 1);
+        const removedElement = this.values.pop()
+        if(this.values.length === 0){
+            return removedElement;
+        }
+        
+        let i = 0;
+        
+        let elementPriority = this.values[i].priority;
+        
+        while(true){
+            let leftI =  Math.floor((i * 2)  + 1);
+            let rightI =  Math.floor((i * 2) + 2);
+            let leftChildPriority, rightChildPriority;
+            let swap = null;
+            
+            if(leftI < this.values.length){
+                leftChildPriority = this.values[leftI].priority;
+                if(leftChildPriority < elementPriority){
+                    swap = leftI
+                }
+            }
+
+            if(rightI < this.values.length){
+                rightChildPriority = this.values[rightI].priority
+                
+                if(swap === null && rightChildPriority < elementPriority ||
+                   swap !== null && rightChildPriority < leftChildPriority
+                  ) {
+                    swap = rightI
+                }
+            }
+            if(swap){
+                this.swap(this.values, i, swap);
+                i = swap;
+            } else {
+                break;
+            }
+        }
+
+        return removedElement;
+        
     }
 }
 
@@ -129,39 +196,40 @@ class WeightedGraph{
     }
 
     dijkstra(start, end){
+        const priorityQueue = new PriorityQueue();
         const distances = {};
         const previus = {};
-        
-        Object.keys(this.adjacencyList).forEach(key => distances[key] = Infinity)
-        const priorityQueue = new PriorityQueue();
-        distances[start] = 0;
+  
 
-        Object.keys(distances).forEach(vertex => {
-            priorityQueue.enqueue(vertex, distances[vertex]);
+        for (let vertex in this.adjacencyList) {
+            if(vertex === start){
+                distances[vertex] = 0;
+                priorityQueue.enqueue(vertex, 0);
+            } else {
+                distances[vertex] = Infinity;
+                priorityQueue.enqueue(vertex, Infinity);
+            }
             previus[vertex] = null;
-        })
-
+        }
+        
         while(priorityQueue.values.length){
-            const current = priorityQueue.values.shift();
-
-            if(current.val !== end){
-                
-                this.adjacencyList[current.val].forEach(edge => {
-                    const distance = distances[current.val] + edge.weight;
-                    if(distance < distances[edge.node]){
-                        distances[edge.node] = distance;
-                        previus[edge.node] = current.val;
-                        priorityQueue.enqueue(edge.node, distance)
+            const smallestPriority = priorityQueue.dequeue();
+            if(smallestPriority.value !== end){
+                this.adjacencyList[smallestPriority.value].forEach(edge => {
+                    const nextNode = edge.node;
+                    const distance = distances[smallestPriority.value] + edge.weight;
+                    if(distance < distances[nextNode]){
+                        distances[nextNode] = distance;
+                        previus[nextNode] = smallestPriority.value;
+                        priorityQueue.enqueue(nextNode, distance)
                     }
             
                 })
+                
             } else {
                 break;
             }
         }
-            console.log(distances);
-        
-        console.log(previus);
         
         let current = end;
         let path = [current];
@@ -194,4 +262,4 @@ g.addEdge("E", "F", 1);
 
 
 
-g.dijkstra("A", "B")
+g.dijkstra("A", "E")
