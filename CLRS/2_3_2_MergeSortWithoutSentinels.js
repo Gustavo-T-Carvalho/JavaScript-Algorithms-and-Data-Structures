@@ -1,10 +1,10 @@
-const arr = [8 , 7, 5, 2, 4 ,6, 3, 1]
+const arr = [8, 7, 5, 2, 4, 6, 3, 1]
 
-mergeSort(arr, 0 , arr.length - 1)
+mergeSort(arr, 0, arr.length - 1)
 
-function mergeSort(arr, pInitial, pEnd){
-    if(pInitial < pEnd){
-         const pMid = Math.floor((pInitial + pEnd) / 2);
+function mergeSort(arr, pInitial, pEnd) {
+    if (pInitial < pEnd) {
+        const pMid = Math.floor((pInitial + pEnd) / 2);
         mergeSort(arr, pInitial, pMid);
         mergeSort(arr, pMid + 1, pEnd);
         console.log(arr)
@@ -12,7 +12,7 @@ function mergeSort(arr, pInitial, pEnd){
     }
 }
 
-function merge(arr, pInitial, pMid, pEnd){
+function merge(arr, pInitial, pMid, pEnd) {
     const leftLength = pMid - pInitial + 1;
     const rightLength = pEnd - pMid;
     const left = [];
@@ -24,24 +24,24 @@ function merge(arr, pInitial, pMid, pEnd){
     for (let j = 0; j < rightLength; j++) {
         right[j] = arr[pMid + j + 1];
     }
-    
+
     let i = 0;
     let j = 0;
-    
-    for (let p = pInitial; p <= pEnd; p++) {    
-        if(i === leftLength){
+
+    for (let p = pInitial; p <= pEnd; p++) {
+        if (i === leftLength) {
             arr[p] = right[j];
             j++;
             continue;
         }
 
-        if(j === rightLength){
+        if (j === rightLength) {
             arr[p] = left[i];
             i++;
             continue;
         }
-        
-        if(left[i] <= right[j]){
+
+        if (left[i] <= right[j]) {
             arr[p] = left[i];
             i++;
         } else {
